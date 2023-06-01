@@ -1,9 +1,20 @@
 import { useState } from 'react'
 
+const MostVotes = (props) => {
+  return (
+    <div>
+      <h1>Anecdote with most votes</h1>
+      <p>{props.mostVoted}</p>
+      <p>has {props.voteAmount} votes</p>
+    </div>
+  )
+}
+
+
 const Votes = (props) => {
   return (
     <div>
-      <p>Has {props.votes} votes</p>
+      <p>has {props.votes} votes</p>
     </div>
   )
 }
@@ -34,11 +45,27 @@ const App = () => {
     setSelected(generateRandomNumber(anecdotes.length))
   }
 
+  const getMostVotedIndex = (points) => {
+    let max = points[0]
+    let maxIndex = 0
+    console.log('points.length', points.length)
+
+    for (let i = 1; i < points.length; i++) {
+      if (points[i] > max) {
+        maxIndex = i
+        max = points[i]
+        console.log('iterating points array')
+      }
+    }
+
+    console.log('Max index' , maxIndex)
+    return maxIndex
+  }
+
   const addVote = (points, index) => {
-    console.log('kaa')
-    const newVoteArray = { ...points }
+    const newVoteArray = [ ...points ]
     newVoteArray[index] += 1
-    setPoints(newVoteArray)   
+    setPoints(newVoteArray)
   }
 
   const [selected, setSelected] = useState(0)
@@ -46,10 +73,12 @@ const App = () => {
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <Votes votes={points[selected]} />
       <Button handleClick={() => addVote(points, selected)} text='vote' />
       <Button handleClick={() => displayNewAnecdote()} text='next anecdote' />
+      <MostVotes mostVoted={anecdotes[getMostVotedIndex(points)]} voteAmount={points[getMostVotedIndex(points)]} />
     </div>
   )
 }
