@@ -57,17 +57,14 @@ const App = () => {
   const getMostVotedIndex = (points) => {
     let max = points[0]
     let maxIndex = 0
-    console.log('points.length', points.length)
 
     for (let i = 1; i < points.length; i++) {
       if (points[i] > max) {
         maxIndex = i
         max = points[i]
-        console.log('iterating points array')
       }
     }
 
-    console.log('Max index' , maxIndex)
     return maxIndex
   }
 
