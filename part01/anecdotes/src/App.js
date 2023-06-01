@@ -1,5 +1,15 @@
 import { useState } from 'react'
 
+const AnecdoteOfTheDay = (props) => {
+  return (
+    <div>
+      <h1>Anecdote of the day</h1>
+      <p>{props.anecdote}</p>
+      <Votes votes={props.votes} />
+    </div>
+  )
+}
+
 const MostVotes = (props) => {
   return (
     <div>
@@ -9,7 +19,6 @@ const MostVotes = (props) => {
     </div>
   )
 }
-
 
 const Votes = (props) => {
   return (
@@ -73,9 +82,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Anecdote of the day</h1>
-      <p>{anecdotes[selected]}</p>
-      <Votes votes={points[selected]} />
+      <AnecdoteOfTheDay anecdote={anecdotes[selected]} votes={points[selected]} />
       <Button handleClick={() => addVote(points, selected)} text='vote' />
       <Button handleClick={() => displayNewAnecdote()} text='next anecdote' />
       <MostVotes mostVoted={anecdotes[getMostVotedIndex(points)]} voteAmount={points[getMostVotedIndex(points)]} />
