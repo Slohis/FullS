@@ -34,6 +34,22 @@ const PersonForm = (props) => {
   )
 }
 
+const Persons = (props) => {
+  console.log('Persons list component props:', props)
+
+  const entriesToShow = props.filterString
+    ? props.persons.filter(person => person.name.toLowerCase().startsWith(props.filterString.toLowerCase(), 0))
+    : props.persons
+
+  return (
+    <ul>
+      {entriesToShow.map(person =>
+        <ListItem id={person.id} key={person.name} name={person.name} number={person.number} />
+      )}
+    </ul>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -84,10 +100,6 @@ const App = () => {
     return found
   }
 
-  const entriesToShow = filterString
-    ? persons.filter(person => person.name.toLowerCase().startsWith(filterString.toLowerCase(), 0))
-    : persons
-
   return (
     <div>
       <h2>Phonebook</h2>
@@ -101,11 +113,7 @@ const App = () => {
         numberInputEventHandler={handleNumberInputChange}
       />
       <h3>Numbers</h3>
-      <ul>
-        {entriesToShow.map(person =>
-          <ListItem id={person.id} key={person.name} name={person.name} number={person.number} />
-        )}
-      </ul>
+      <Persons persons={persons} filterString={filterString} />
     </div>
   )
 }
