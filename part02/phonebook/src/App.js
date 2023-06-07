@@ -7,7 +7,6 @@ const ListItem = ({ id, name, number }) => {
 }
 
 const Filter = (props) => {
-  console.log('Filter component props:', props)
 
   return (
     <div>
@@ -17,7 +16,6 @@ const Filter = (props) => {
 }
 
 const PersonForm = (props) => {
-  console.log('Person form props:', props)
 
   return (
     <form onSubmit={props.addEntry}>
@@ -35,7 +33,6 @@ const PersonForm = (props) => {
 }
 
 const Persons = (props) => {
-  console.log('Persons list component props:', props)
 
   const entriesToShow = props.filterString
     ? props.persons.filter(person => person.name.toLowerCase().startsWith(props.filterString.toLowerCase(), 0))
@@ -94,9 +91,7 @@ const App = () => {
   }
 
   const isNameExisting = (name) => {
-    console.log('searching for existing name', name)
     const found = persons.some(person => person.name === name, false)
-    console.log('existing name found?', found)
     return found
   }
 
