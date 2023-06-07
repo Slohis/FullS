@@ -16,6 +16,24 @@ const Filter = (props) => {
   )
 }
 
+const PersonForm = (props) => {
+  console.log('Person form props:', props)
+
+  return (
+    <form onSubmit={props.addEntry}>
+      <div>
+        name: <input value={props.newName} onChange={props.nameInputEventHandler} />
+      </div>
+      <div>
+        number: <input value={props.newNumber} onChange={props.numberInputEventHandler} />
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -75,17 +93,13 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter filterString={filterString} eventHandler={handleFilterInputChange} />
       <h3>Add a new</h3>
-      <form onSubmit={addEntry}>
-        <div>
-          name: <input value={newName} onChange={handleNameInputChange} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberInputChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm
+        addEntry={addEntry}
+        newName={newName}
+        newNumber={newNumber}
+        nameInputEventHandler={handleNameInputChange}
+        numberInputEventHandler={handleNumberInputChange}
+      />
       <h3>Numbers</h3>
       <ul>
         {entriesToShow.map(person =>
