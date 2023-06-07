@@ -6,6 +6,16 @@ const ListItem = ({ id, name, number }) => {
   )
 }
 
+const Filter = (props) => {
+  console.log('Filter component props:', props)
+
+  return (
+    <div>
+      filter shown with <input value={props.filterString} onChange={props.eventHandler} />
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -63,10 +73,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with <input value={filterString} onChange={handleFilterInputChange} />
-      </div>
-      <h2>Add a new</h2>
+      <Filter filterString={filterString} eventHandler={handleFilterInputChange} />
+      <h3>Add a new</h3>
       <form onSubmit={addEntry}>
         <div>
           name: <input value={newName} onChange={handleNameInputChange} />
@@ -78,7 +86,7 @@ const App = () => {
           <button type="submit">add</button>
         </div>
       </form>
-      <h2>Numbers</h2>
+      <h3>Numbers</h3>
       <ul>
         {entriesToShow.map(person =>
           <ListItem id={person.id} key={person.name} name={person.name} number={person.number} />
