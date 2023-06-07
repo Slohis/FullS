@@ -60,7 +60,6 @@ const App = () => {
 
   const addEntry = (event) => {
     event.preventDefault()
-    console.log('submit event', event.target)
     if (!isNameExisting(newName)) {
       const newEntryObject = {
         name: newName,
