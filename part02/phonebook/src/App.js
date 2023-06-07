@@ -15,16 +15,27 @@ const App = () => {
   const addEntry = (event) => {
     event.preventDefault()
     console.log('submit event', event.target)
-    const newEntryObject = {
-      name: newName
+    if (!isNameExisting(newName)) {
+      const newEntryObject = {
+        name: newName
+      }
+      setPersons(persons.concat(newEntryObject))
+      setNewName('')
+    } else {
+      alert(`${newName} is already added to phonebook`)
     }
-    setPersons(persons.concat(newEntryObject))
-    setNewName('')
   }
 
   const handleInputChange = (event) => {
     console.log('change event', event.target.value)
     setNewName(event.target.value)
+  }
+
+  const isNameExisting = (name) => {
+    console.log('searching for existing name', name)
+    const found = persons.some(person => person.name === name, false)
+    console.log('existing name found?', found)
+    return found
   }
 
   return (
