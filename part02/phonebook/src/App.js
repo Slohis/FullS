@@ -64,15 +64,18 @@ const App = () => {
 
   const addEntry = (event) => {
     event.preventDefault()
+    const newEntryObject = {
+      name: newName,
+      number: newNumber,
+    }
     if (!isNameExisting(newName)) {
-      const newEntryObject = {
-        name: newName,
-        number: newNumber,
-        id: persons.length + 1
-      }
-      setPersons(persons.concat(newEntryObject))
-      setNewName('')
-      setNewNumber('')
+      const request = axios
+        .post('http://localhost:3001/persons', newEntryObject)
+        .then(returnedEntry => {
+          setPersons(persons.concat(returnedEntry.data))
+          setNewName('')
+          setNewNumber('')
+        } )
     } else {
       alert(`${newName} is already added to phonebook`)
     }
