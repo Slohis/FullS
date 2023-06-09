@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import personService from './services/persons'
-import persons from './services/persons'
 
 const ListItem = ({ id, name, number, remove }) => {
   return (
@@ -79,7 +77,18 @@ const App = () => {
           setNewNumber('')
         })
     } else {
-      alert(`${newName} is already added to phonebook`)
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        //Update the number of the entry with HTTP PUT
+        const entryToUpdate = getPersonByName(newName)
+        const updatedEntry = { ...entryToUpdate, number: newNumber}
+        personService
+          .update(updatedEntry.id, updatedEntry)
+          .then(returnedEntry => {
+            setPersons(persons.map(person => person.id !== updatedEntry.id ? person : updatedEntry))
+
+          })
+      }
+
     }
   }
 
@@ -93,6 +102,11 @@ const App = () => {
           setPersons(persons.filter(n => n.id !== id))
         })
     }
+  }
+
+  const getPersonByName = (name) => {
+    const match = persons.find(person => person.name === name)
+    return match
   }
 
   const handleNameInputChange = (event) => {
