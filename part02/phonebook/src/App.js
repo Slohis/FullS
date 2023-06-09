@@ -3,9 +3,9 @@ import axios from 'axios'
 import personService from './services/persons'
 import persons from './services/persons'
 
-const ListItem = ({ id, name, number }) => {
+const ListItem = ({ id, name, number, remove }) => {
   return (
-    <div>{name} {number}</div>
+    <div>{name} {number} <button onClick={() => remove(id, name)}>delete</button></div>
   )
 }
 
@@ -44,7 +44,7 @@ const Persons = (props) => {
   return (
     <ul>
       {entriesToShow.map(person =>
-        <ListItem id={person.id} key={person.name} name={person.name} number={person.number} />
+        <ListItem id={person.id} key={person.name} name={person.name} number={person.number} remove={props.remove} />
       )}
     </ul>
   )
@@ -56,12 +56,12 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterString, setFilterString] = useState('')
 
-  useEffect(() => {    
+  useEffect(() => {
     personService
       .getAll()
       .then(initialEntries => {
         setPersons(initialEntries)
-      })  
+      })
   }, [])
 
   const addEntry = (event) => {
@@ -80,6 +80,18 @@ const App = () => {
         })
     } else {
       alert(`${newName} is already added to phonebook`)
+    }
+  }
+
+  const removeEntry = (id, name) => {
+    console.log(`deletion of entry id ${id} requested`)
+    if (window.confirm(`Delete ${name} ?`)) {
+      personService
+        .remove(id)
+        .then(returnedObject => {
+          console.log(`deletion of entry id ${id}: ${name}`)
+          setPersons(persons.filter(n => n.id !== id))
+        })
     }
   }
 
@@ -116,7 +128,7 @@ const App = () => {
         numberInputEventHandler={handleNumberInputChange}
       />
       <h3>Numbers</h3>
-      <Persons persons={persons} filterString={filterString} />
+      <Persons persons={persons} filterString={filterString} remove={removeEntry} />
     </div>
   )
 }
