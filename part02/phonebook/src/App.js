@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 
-const Notification = ({ message }) => {
+const Notification = ({ message, messageType }) => {
   if (message === null) {
     return null
   }
 
   return (
-    <div className='notification'>
+    <div className={messageType}>
       {message}
     </div>
   )
@@ -66,6 +66,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterString, setFilterString] = useState('')
   const [notificationMessage, setNotificationMessage] = useState(null)
+  const [notificationType, setNotificationType] = useState('notification')
 
   useEffect(() => {
     personService
@@ -89,7 +90,10 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
-      setNotificationMessage(`Added ${newName}`)
+      const msg = `Added ${newName}`
+      setNotificationMessage(msg)
+      setNotificationType('notification')
+      console.log(msg)
       setTimeout(() => {
         setNotificationMessage(null)
       }, 5000)
@@ -97,16 +101,37 @@ const App = () => {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         const entryToUpdate = getPersonByName(newName)
         const updatedEntry = { ...entryToUpdate, number: newNumber}
+        let changeSucceeded = true
         personService
           .update(updatedEntry.id, updatedEntry)
           .then(returnedEntry => {
             setPersons(persons.map(person => person.id !== updatedEntry.id ? person : updatedEntry))
-
+            setNewName('')
+            setNewNumber('')
           })
-        setNotificationMessage(`Changed the phone number of ${newName}`)
-        setTimeout(() => {
-          setNotificationMessage(null)
-        }, 5000)
+          .catch(error => {
+            changeSucceeded = false
+            const msg = `Information of ${newName} has already been removed from server`
+            setNotificationMessage(msg)
+            setNotificationType('error')
+            setNewName('')
+            setNewNumber('')
+            setPersons(persons.filter(person => person.id !== updatedEntry.id))
+            console.log(msg)
+            setTimeout(() => {
+              setNotificationMessage(null)
+            }, 5000)
+          })
+        if (changeSucceeded) {
+          const msg = `Changed the phone number of ${newName}`
+          setNotificationMessage(msg)
+          setNotificationType('notification')
+          console.log(msg)
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 5000)
+        }
+        
       }
 
     }
@@ -130,17 +155,17 @@ const App = () => {
   }
 
   const handleNameInputChange = (event) => {
-    console.log('name field change to', event.target.value)
+    //console.log('name field change to', event.target.value)
     setNewName(event.target.value)
   }
 
   const handleNumberInputChange = (event) => {
-    console.log('number field change to', event.target.value)
+    //console.log('number field change to', event.target.value)
     setNewNumber(event.target.value)
   }
 
   const handleFilterInputChange = (event) => {
-    console.log('filter field change to', event.target.value)
+    //console.log('filter field change to', event.target.value)
     setFilterString(event.target.value)
   }
 
@@ -152,7 +177,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notificationMessage} />
+      <Notification message={notificationMessage} messageType={notificationType} />
       <Filter filterString={filterString} eventHandler={handleFilterInputChange} />
       <h3>Add a new</h3>
       <PersonForm
