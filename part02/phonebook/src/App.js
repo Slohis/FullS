@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className='notification'>
+      {message}
+    </div>
+  )
+}
+
 const ListItem = ({ id, name, number, remove }) => {
   return (
     <div>{name} {number} <button onClick={() => remove(id, name)}>delete</button></div>
@@ -53,6 +65,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterString, setFilterString] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -76,9 +89,12 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
+      setNotificationMessage(`Added ${newName}`)
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 5000)
     } else {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
-        //Update the number of the entry with HTTP PUT
         const entryToUpdate = getPersonByName(newName)
         const updatedEntry = { ...entryToUpdate, number: newNumber}
         personService
@@ -87,6 +103,10 @@ const App = () => {
             setPersons(persons.map(person => person.id !== updatedEntry.id ? person : updatedEntry))
 
           })
+        setNotificationMessage(`Changed the phone number of ${newName}`)
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 5000)
       }
 
     }
@@ -132,6 +152,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
       <Filter filterString={filterString} eventHandler={handleFilterInputChange} />
       <h3>Add a new</h3>
       <PersonForm
